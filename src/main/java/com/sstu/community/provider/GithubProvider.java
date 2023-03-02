@@ -40,11 +40,12 @@ public class GithubProvider {
     ){
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("https://api.github.com/user?access_token=".concat(accessToken))
+                .url("https://api.github.com/user").header("Authorization", "token ".concat(accessToken))
                 .build();
         try {
             Response response = client.newCall(request).execute();
             String string = response.body().string();
+            System.out.println(string);
             GithubUserDTO githubUserDTO = JSON.parseObject(string, GithubUserDTO.class);
             return githubUserDTO;
         } catch (IOException e) {
