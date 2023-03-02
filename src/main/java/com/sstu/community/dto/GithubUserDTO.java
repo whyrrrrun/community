@@ -7,4 +7,8 @@ public class GithubUserDTO {
     private String login;
     private Long id;
     private String node_id;
+
+    public String getName() {
+        return login;
+    }
 }
