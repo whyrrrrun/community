@@ -78,6 +78,20 @@
             <version>8.0.18</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>jQuery</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

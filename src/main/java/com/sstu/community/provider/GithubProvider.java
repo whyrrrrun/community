@@ -47,6 +47,7 @@ public class GithubProvider {
             String string = response.body().string();
             System.out.println(string);
             GithubUserDTO githubUserDTO = JSON.parseObject(string, GithubUserDTO.class);
+            System.out.println(githubUserDTO.getAvatarUrl());
             return githubUserDTO;
         } catch (IOException e) {
             e.printStackTrace();
