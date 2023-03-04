@@ -3,7 +3,6 @@ package com.sstu.community.controller;
 
 import com.sstu.community.dto.AccessTokenDTO;
 import com.sstu.community.dto.GithubUserDTO;
-import com.sstu.community.mapper.UserMapper;
 import com.sstu.community.model.User;
 import com.sstu.community.provider.GithubProvider;
 import com.sstu.community.service.UserService;
@@ -23,8 +22,6 @@ public class AuthorizeController {
 
     @Autowired
     private GithubProvider githubProvider;
-    @Autowired
-    private UserMapper userMapper;
     @Autowired
     private UserService userService;
 

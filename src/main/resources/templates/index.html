@@ -9,6 +9,17 @@
     <link rel="stylesheet" href="css/community.css">
     <script src="js/bootstrap.min.js" type="application/javascript"></script>
 </head>
+
+<script type="application/javascript">
+    window.onload = function () {
+        var closable = window.localStorage.getItem("closable");
+        if (closable == "true") {
+            window.close();
+            window.localStorage.removeItem("closable");
+        }
+    }
+</script>
+
 <body>
 
 <div th:insert="~{navigation :: nav}"></div>
@@ -32,7 +43,7 @@
                     </h4>
                     <span th:text="${question.description}"></span> <br>
                     <span class="text-desc"><span th:text="${question.commentCount}"></span> 个回复 • <span
-                            th:text="${question.viewCount}"></span> 次浏览 • <span  th:text="${#dates.format(question.gmtCreate,'yyyy-mm-dd HH:mm')}"></span></span>
+                            th:text="${question.viewCount}"></span> 次浏览 • <span  th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span></span>
                 </div>
             </div>
             <nav aria-label="Page navigation">
