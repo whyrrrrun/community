@@ -11,13 +11,17 @@ import com.sstu.community.mapper.UserMapper;
 import com.sstu.community.model.Question;
 import com.sstu.community.model.QuestionExample;
 import com.sstu.community.model.User;
+import com.sun.deploy.security.SelectableSecurityManager;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -37,7 +41,10 @@ public class QuestionService {
         Integer offset = size * (page - 1);
         if(offset > questionMapper.countByExample(new QuestionExample()))
             offset = (int) (questionMapper.countByExample(new QuestionExample()) - (questionMapper.countByExample(new QuestionExample()) % size));
-        List<Question> questionList = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
+
+        QuestionExample example = new QuestionExample();
+        example.setOrderByClause("gmt_modified desc");
+        List<Question> questionList = questionMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
         List<QuestionDTO> questionDTOS = new ArrayList<>();
         PaginationDTO paginationDTO = new PaginationDTO();
         for (Question question : questionList) {
@@ -117,5 +124,25 @@ public class QuestionService {
         question.setId(id);
         question.setViewCount(1);
         questionExtMapper.incView(question);
+    }
+
+    public List<Question> selectRelated(Question query) {
+        if(StringUtils.isEmpty(query.getTag())){
+            return new ArrayList<>();
+        }
+        String[] tags;
+        if(StringUtils.split(query.getTag(), ",") == null){
+            tags = new String[1];
+            tags[0] = query.getTag();
+        }
+        else
+            tags = StringUtils.split(query.getTag(), ",");
+        String regexpTag = Arrays.stream(tags).collect(Collectors.joining("|"));
+        Question question = new Question();
+        question.setId(query.getId());
+        question.setTag(regexpTag);
+
+        List<Question> questions = questionExtMapper.selectRelated(question);
+        return questions;
     }
 }

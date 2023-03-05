@@ -8,41 +8,10 @@
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/community.css">
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/community.js" type="application/javascript"></script>
 </head>
 <body>
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">我的社区</span>
-            </button>
-            <a class="navbar-brand" href="/">我的社区</a>
-        </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form class="navbar-form navbar-left">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="搜索问题">
-                </div>
-                <button type="submit" class="btn btn-default">搜索</button>
-            </form>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown" th:if="${session.user != null}">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        <span th:text="${session.user.getName()}"></span>
-                        <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/profile/questions">我的问题</a></li>
-                        <li><a href="#">个人资料</a></li>
-                        <li><a href="#">退出登录</a></li>
-                    </ul>
-                </li>
-                <li th:if="${session.user == null}"><a href="https://github.com/login/oauth/authorize?client_id=48600cf3fc6fde6d7369&redirect_uri=Http://localhost:8888/callback&scope=user&state=1">登录</a></li>
-
-            </ul>
-        </div>
-    </div>
-</nav>
+<div th:insert="~{navigation :: nav}"></div>
 <div class="container-fluid main">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
@@ -53,7 +22,7 @@
                 <input type="hidden" name="id" th:value="${id}">
                 <div class="form-group">
                     <label for="title">问题标题（简单扼要）:</label>
-                    <input type="text" th:value="${title}" class="form-control" id="title" name="title" placeholder="问题标题……">
+                    <input type="text" th:value="${title}" class="form-control" id="title" name="title" placeholder="问题标题……" autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label for="description" >问题描述 (必填，请参照右侧提示):</label>
@@ -62,7 +31,30 @@
                 </div>
                 <div class="form-group">
                     <label for="tag" >添加标签:</label>
-                    <input type="text" th:value="${tag}" class="form-control" id="tag" name="tag" placeholder="输入标签，以，号分隔">
+                    <input type="text" th:value="${tag}" class="form-control" id="tag" name="tag" placeholder="输入标签，以,号分隔" autocomplete="off"
+                           onclick="showSelectTag()">
+                    <div id="select-tag" class="publish-tag-tab">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" th:each="selectCategory,selectCategoryStat: ${tags}" th:class="${selectCategoryStat? 'active':''}">
+                                <a th:href="${'#'+selectCategory.categoryName}" aria-controls="home" role="tab"
+                                   data-toggle="tab" th:text="${selectCategory.categoryName}"></a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div role="tabpanel"  th:id="${selectCategory.categoryName}"
+                                 th:each="selectCategory,selectCategoryStat: ${tags}"
+                                 th:class="${selectCategoryStat? 'tab-pane active' : 'tab-pane'}">
+                                <span>
+                                    <span class="label label-info" th:each="selectTag: ${selectCategory.tags}">
+                                    <span class="glyphicon glyphicon-tags" onclick="selectTag(this)"
+                                          th:data-tag="${selectTag.getTagName()}"
+                                          th:text="${' ' + selectTag.getTagName()}">
+                                    </span>
+                                </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="container-fluid main">
