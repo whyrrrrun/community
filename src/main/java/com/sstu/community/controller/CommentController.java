@@ -32,7 +32,7 @@ public class CommentController {
         User user = (User) request.getSession().getAttribute("user");
         if(user == null)
             throw new CustomizeException(CustomizeErrorCode.NO_LOGIN);
-        if(StringUtils.isEmpty(commentCreateDTO.getContent()) || commentCreateDTO == null)
+        if(StringUtils.isEmpty(commentCreateDTO.getContent()))
             throw new CustomizeException(CustomizeErrorCode.COMMENT_CONTENT_NULL);
         Comment comment = new Comment();
         comment.setContent(commentCreateDTO.getContent());
@@ -43,7 +43,7 @@ public class CommentController {
         comment.setCommentator(user.getId());
         comment.setLikeCount(0);
         comment.setCommentCount(0);
-        commentService.insert(comment);
+        commentService.insert(comment , user.getId());
         return ResultDTO.okOf();
     }
 

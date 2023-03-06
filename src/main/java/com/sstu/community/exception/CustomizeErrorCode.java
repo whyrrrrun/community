@@ -10,6 +10,8 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode {
     QUESTIONC_NOT_FOUND(2006, "评论对象不存在，请重新选择评论对象。"),
     SYS_ERROR(2007, "服务冒烟了，要不然你稍后再试试？"),
     COMMENT_CONTENT_NULL(2008,"回复内容不能为空！"),
+    NOTIFICATION_NOT_FOUND(2009,"通知不见了"),
+    READ_NOTIFICATION_FAIL(2010,"阅读通知发生错误，请重试！"),
     ;
 
     private String message;

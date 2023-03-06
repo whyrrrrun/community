@@ -2,6 +2,7 @@ package com.sstu.community.controller;
 
 
 import com.sstu.community.dto.PaginationDTO;
+import com.sstu.community.dto.QuestionDTO;
 import com.sstu.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,7 +27,7 @@ public class IndexController {
     ){
        // User user = (User) request.getSession().getAttribute("user");
 
-        PaginationDTO paginationDTO = questionService.list(page,size);
+        PaginationDTO<QuestionDTO> paginationDTO = questionService.list(page,size);
         model.addAttribute("pagination",paginationDTO);
         return "index";
     }

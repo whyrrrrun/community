@@ -34,7 +34,7 @@ public class QuestionService {
     private QuestionExtMapper questionExtMapper;
 
 
-    public PaginationDTO list(Integer page, Integer size) {
+    public PaginationDTO<QuestionDTO> list(Integer page, Integer size) {
 
         if(page < 1)
             page = 1;
@@ -42,24 +42,18 @@ public class QuestionService {
         if(offset > questionMapper.countByExample(new QuestionExample()))
             offset = (int) (questionMapper.countByExample(new QuestionExample()) - (questionMapper.countByExample(new QuestionExample()) % size));
 
-        QuestionExample example = new QuestionExample();
-        example.setOrderByClause("gmt_modified desc");
-        List<Question> questionList = questionMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
-        List<QuestionDTO> questionDTOS = new ArrayList<>();
-        PaginationDTO paginationDTO = new PaginationDTO();
-        for (Question question : questionList) {
-            User user = userMapper.selectByPrimaryKey(question.getCreator());
-            QuestionDTO questionDTO = new QuestionDTO();
-            BeanUtils.copyProperties(question,questionDTO);
-            questionDTO.setUser(user);
-            questionDTOS.add(questionDTO);
-        }
-        paginationDTO.setQuestions(questionDTOS);
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("gmt_modified desc");
+        PaginationDTO<QuestionDTO> paginationDTO = new PaginationDTO<>();
+        List<QuestionDTO> questionDTOS = getQuestionDTO(size, questionExample, offset);
+        if(questionDTOS.size() == 0)
+            return paginationDTO;
+        paginationDTO.setData(questionDTOS);
         paginationDTO.setPagination(page,size,(int)questionMapper.countByExample(new QuestionExample()));
         return paginationDTO;
     }
 
-    public PaginationDTO list(Long id, Integer page, Integer size) {
+    public PaginationDTO<QuestionDTO> list(Long id, Integer page, Integer size) {
 
         QuestionExample questionExample = new QuestionExample();
         questionExample.createCriteria().andCreatorEqualTo(id);
@@ -71,9 +65,19 @@ public class QuestionService {
         if(offset > idCount)
             offset = idCount - (idCount % size);
 
+        PaginationDTO<QuestionDTO> paginationDTO = new PaginationDTO<>();
+        questionExample.setOrderByClause("gmt_modified desc");
+        List<QuestionDTO> questionDTOS = getQuestionDTO(size, questionExample, offset);
+        if(questionDTOS.size() == 0)
+            return paginationDTO;
+        paginationDTO.setData(questionDTOS);
+        paginationDTO.setPagination(page,size,idCount);
+        return paginationDTO;
+    }
+
+    private List<QuestionDTO> getQuestionDTO(Integer size, QuestionExample questionExample, Integer offset) {
         List<Question> questionList = questionMapper.selectByExampleWithRowbounds(questionExample,new RowBounds(offset,size));
         List<QuestionDTO> questionDTOS = new ArrayList<>();
-        PaginationDTO paginationDTO = new PaginationDTO();
         for (Question question : questionList) {
             User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
@@ -81,9 +85,7 @@ public class QuestionService {
             questionDTO.setUser(user);
             questionDTOS.add(questionDTO);
         }
-        paginationDTO.setQuestions(questionDTOS);
-        paginationDTO.setPagination(page,size,idCount);
-        return paginationDTO;
+        return questionDTOS;
     }
 
     public QuestionDTO getById(Long id) {
@@ -142,7 +144,6 @@ public class QuestionService {
         question.setId(query.getId());
         question.setTag(regexpTag);
 
-        List<Question> questions = questionExtMapper.selectRelated(question);
-        return questions;
+        return questionExtMapper.selectRelated(question);
     }
 }

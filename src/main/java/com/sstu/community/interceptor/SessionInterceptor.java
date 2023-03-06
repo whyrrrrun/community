@@ -3,6 +3,8 @@ package com.sstu.community.interceptor;
 import com.sstu.community.mapper.UserMapper;
 import com.sstu.community.model.User;
 import com.sstu.community.model.UserExample;
+import com.sstu.community.service.NotificationService;
+import com.sstu.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,9 @@ import java.util.List;
 @Service
 public class SessionInterceptor implements HandlerInterceptor {
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -26,11 +30,11 @@ public class SessionInterceptor implements HandlerInterceptor {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("token")) {
                     String token = cookie.getValue();
-                    UserExample userExample = new UserExample();
-                    userExample.createCriteria().andTokenEqualTo(token);
-                    List<User> users = userMapper.selectByExample(userExample);
+                    List<User> users = userService.getByToken(token);
                     if (users.size() != 0) {
                         request.getSession().setAttribute("user", users.get(0));
+                        Long unreadCount = notificationService.unreadCount(users.get(0).getId());
+                        request.getSession().setAttribute("unreadCount",unreadCount);
                     }
                     break;
                 }

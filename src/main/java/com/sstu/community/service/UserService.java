@@ -33,4 +33,10 @@ public class UserService {
             userMapper.updateByExampleSelective(updateUser, example);
         }
     }
+
+    public List<User> getByToken(String token) {
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andTokenEqualTo(token);
+        return userMapper.selectByExample(userExample);
+    }
 }
