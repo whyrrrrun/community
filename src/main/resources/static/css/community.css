@@ -134,3 +134,7 @@ body {
     white-space: normal;
     display: inline-block;
 }
+.footer {
+    padding: 10px 25%;
+    color: #666;;
+}

@@ -144,3 +144,11 @@ function selectTag(e) {
         }
     }
 }
+
+
+
+function searchQuestion(){
+
+    var questionName = $("#searchName").val();
+
+}

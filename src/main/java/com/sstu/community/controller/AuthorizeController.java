@@ -50,7 +50,6 @@ public class AuthorizeController {
         accessTokenDTO.setClient_secret(clientSecret);
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         GithubUserDTO githubUserDTO = githubProvider.getUser(accessToken);
-//        System.out.println(githubUserDTO.getName());
         if(githubUserDTO.getName() != null && githubUserDTO != null){
             //登陆成功，保存cookie和session
             User user = new User();
